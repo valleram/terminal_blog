@@ -1,13 +1,7 @@
 __author__ = 'CJVR'
 
-import pymongo
+from modules.post import Post
 
-uri = 'mongodb://127.0.0.1:27017'
-client = pymongo.MongoClient(uri)
-database = client['fullstack']
-collection = database['students']
+post = Post()
+post2 = Post()
 
-students = collection.find({})
-
-for student in students:
-    print(student)
