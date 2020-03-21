@@ -5,6 +5,3 @@ from modules.post import Post
 
 Database.initialize()
 
-post = Post()
-post2 = Post()
-

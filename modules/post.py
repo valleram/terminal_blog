@@ -1,18 +1,18 @@
 __author__ = 'CJVR'
 
-import datetime
-
+import uuid
+from datetime import datetime
 from database import Database
 
 
 class Post:
-    def __init__(self, blog_id, title, content, author, date, id):
+    def __init__(self, blog_id, title, content, author, date=datetime.utcnow(), id=None):
         self.blog_id = blog_id
         self.title = title
         self.content = content
         self.author = author
         self.created_date = date
-        self.id = id
+        self.id = uuid.uuid4().hex if id is None else id
 
     def save_to_mongo(self):
         Database.insert(collection='post',
@@ -29,11 +29,17 @@ class Post:
 
         }
 
-    @staticmethod
-    def from_mongo(id):
-        return Database.find_one(collection='post',
+    @classmethod
+    def from_mongo(cls, id):
+        post_data = Database.find_one(collection='post',
                                  query={'id': id})
+        return cls(blog_id=post_data['blog_id'],
+                   title=post_data['title'],
+                   content=post_data['content'],
+                   author=post_data['author'],
+                   date=post_data['created_date'],
+                   id=post_data['id'])
 
     @staticmethod
     def from_blog(id):
-        return [post for post in Database.find_one(collection='post', query={'blog_id': id})]
+        return [post for post in Database.find(collection='post', query={'blog_id': id})]
